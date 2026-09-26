@@ -118,14 +118,14 @@ export const certificates: Certificate[] = [
 ]
 
 export const education = [
-  { period: "desde 2024", title: "Engenharia de Computação", place: "UNIUBE" },
-  { period: "desde 2023", title: "Gestão da Informação", place: "UFU" },
+  { period: "2024 - 2028", title: "Engenharia de Computação", place: "UNIUBE" },
+  { period: "2023 - 2028", title: "Gestão da Informação", place: "UFU" },
 ]
 
 export const experience = [
   {
     period: "12/2025 – 06/2026",
-    title: "Estágio comercial (SDR / prospecção de leads)",
+    title: "Estágio",
     place: "Septem Capulus",
     description:
       "Desenvolvimento de comunicação e relacionamento com clientes, hoje aplicado para entender melhor o que quem usa um produto realmente precisa.",
