@@ -8,7 +8,7 @@ export default function Hero() {
     >
       <div className="max-w-xl">
         <p
-          className="text-sm text-accent-2 mb-6 opacity-0 animate-[fadeUp_0.6s_ease_forwards]"
+          className="text-sm text-accent2 mb-6 opacity-0 animate-[fadeUp_0.6s_ease_forwards]"
           style={{ animationDelay: "0.05s" }}
         >
           {profile.location}
@@ -29,8 +29,8 @@ export default function Hero() {
           className="text-text-dim mt-6 leading-relaxed opacity-0 animate-[fadeUp_0.7s_ease_forwards]"
           style={{ animationDelay: "0.45s" }}
         >
-          Construo produtos de ponta a ponta — da modelagem de dados e APIs em
-          Django à interface em React. Interessado em automação, dados e em
+          Construo produtos completos, da modelagem de dados e APIs em
+          Django até a interface em React. Gosto de automação, dados e de
           transformar problemas reais em software que funciona.
         </p>
         <div
@@ -45,7 +45,7 @@ export default function Hero() {
           </a>
           <a
             href="#contato"
-            className="px-5 py-2.5 rounded-md border border-border text-text hover:border-accent-2 hover:text-accent-2 transition-colors"
+            className="px-5 py-2.5 rounded-md border border-border text-text hover:border-accent2 hover:text-accent2 transition-colors"
           >
             Contato
           </a>
@@ -65,7 +65,7 @@ export default function Hero() {
           </div>
           <pre className="font-mono text-[13px] leading-relaxed p-5 overflow-x-auto">
             <code>
-              <span className="text-accent-2">const</span> <span className="text-text">dev</span> = {"{"}
+              <span className="text-accent2">const</span> <span className="text-text">dev</span> = {"{"}
               {"\n"}  name: <span className="text-accent">"Rafael Limongi"</span>,
               {"\n"}  role: <span className="text-accent">"fullstack"</span>,
               {"\n"}  stack: [<span className="text-accent">"Django"</span>, <span className="text-accent">"React"</span>, <span className="text-accent">"PostgreSQL"</span>],

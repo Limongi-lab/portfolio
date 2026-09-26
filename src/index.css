@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -9,15 +9,30 @@
   --color-text: #e4e6ea;
   --color-text-dim: #8a909c;
   --color-accent: #6e56cf;
-  --color-accent-2: #3fd1c9;
+  --color-accent2: #3fd1c9;
 
-  --font-display: "Bricolage Grotesque", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --font-display: "Poppins", sans-serif;
+  --font-body: "Poppins", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+:root[data-theme="light"] {
+  --color-bg: #f6f5f9;
+  --color-surface: #ffffff;
+  --color-surface-2: #f0eff6;
+  --color-border: #e2e0ea;
+  --color-text: #17181c;
+  --color-text-dim: #5b5f6b;
+  --color-accent: #6e56cf;
+  --color-accent2: #0f9c95;
+}
+
+:root[data-theme="light"] .decor-code {
+  display: none;
 }
 
 @keyframes fadeUp {
@@ -49,6 +64,6 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent-2);
+  outline: 2px solid var(--color-accent2);
   outline-offset: 2px;
 }
