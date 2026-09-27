@@ -3,7 +3,7 @@
 Portfólio pessoal de Rafael Limongi, desenvolvedor fullstack: Django/DRF,
 React e PostgreSQL, entre outras tecnologias.
 
-🔗 [rafaellimongi.com](https://rafaellimongi.com)
+🔗 [rafaellimongi.vercel.app/](https://rafaellimongi.vercel.app/)
 
 ## Seções
 
@@ -57,4 +57,4 @@ O tema é controlado por `data-theme` no elemento `<html>` e persistido em
 
 ## Deploy
 
-Hospedado na Vercel, com domínio próprio `rafaellimongi.com` apontado via DNS.
+Hospedado na Vercel
