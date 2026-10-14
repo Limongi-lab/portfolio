@@ -1,9 +1,13 @@
 import { useRef } from "react"
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa"
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6"
 import { certificates } from "../data/content"
+import SectionHeading from "./SectionHeading"
+
+const arrowClass =
+  "w-11 h-11 rounded-full border border-border bg-surface flex items-center justify-center text-text-dim hover:border-accent hover:text-accent transition-colors"
 
 export default function Certificates() {
-  const trackRef = useRef<HTMLDivElement>(null)
+  const trackRef = useRef<HTMLUListElement>(null)
 
   const scroll = (dir: 1 | -1) => {
     const el = trackRef.current
@@ -12,70 +16,42 @@ export default function Certificates() {
   }
 
   return (
-    <section id="certificados" className="px-6 md:px-16 max-w-5xl mx-auto py-24 border-t border-border">
-      <div className="flex items-end justify-between gap-4 mb-10">
-        <div>
-          <p className="flex items-center gap-2 text-sm text-accent2 mb-3">
-            <span className="text-accent">◆</span> Certificados
-          </p>
-          <h2 className="font-display font-semibold text-3xl md:text-4xl">
-            Formação e <span className="text-accent">aprendizado contínuo</span>
-          </h2>
-        </div>
-        <div className="hidden sm:flex gap-2 shrink-0">
-          <button
-            onClick={() => scroll(-1)}
-            aria-label="Anterior"
-            className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:border-accent hover:text-accent transition-colors"
-          >
-            <FaChevronLeft size={14} />
-          </button>
-          <button
-            onClick={() => scroll(1)}
-            aria-label="Próximo"
-            className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:border-accent hover:text-accent transition-colors"
-          >
-            <FaChevronRight size={14} />
-          </button>
-        </div>
-      </div>
+    <section id="certificados" className="py-20 border-t border-border">
+      <SectionHeading first="Certificados" ghost="e cursos" />
 
-      <div
+      <ul
         ref={trackRef}
-        className="flex gap-5 overflow-x-auto pb-4 snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="no-scrollbar flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scroll-smooth"
       >
         {certificates.map((cert) => (
-          <div
+          <li
             key={cert.title}
-            className="snap-start shrink-0 w-64 rounded-lg border border-border bg-surface overflow-hidden hover:border-accent transition-colors"
+            className="snap-start shrink-0 w-64 rounded-2xl border border-border bg-surface/70 overflow-hidden transition-colors hover:border-accent"
           >
             {cert.image && (
               <div className="h-40 bg-surface-2 overflow-hidden">
-                <img src={cert.image} alt={cert.title} className="w-full h-full object-cover" />
+                <img
+                  src={cert.image}
+                  alt={`Certificado: ${cert.title}`}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
               </div>
             )}
             <div className="p-4">
               <p className="text-xs text-accent2 mb-1">{cert.issuer}</p>
               <h3 className="font-display font-medium text-sm leading-snug">{cert.title}</h3>
             </div>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <div className="flex sm:hidden gap-2 mt-4 justify-center">
-        <button
-          onClick={() => scroll(-1)}
-          aria-label="Anterior"
-          className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:border-accent hover:text-accent transition-colors"
-        >
-          <FaChevronLeft size={14} />
+      <div className="flex gap-2 justify-end mt-5">
+        <button onClick={() => scroll(-1)} aria-label="Certificados anteriores" className={arrowClass}>
+          <FaChevronLeft size={13} />
         </button>
-        <button
-          onClick={() => scroll(1)}
-          aria-label="Próximo"
-          className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:border-accent hover:text-accent transition-colors"
-        >
-          <FaChevronRight size={14} />
+        <button onClick={() => scroll(1)} aria-label="Próximos certificados" className={arrowClass}>
+          <FaChevronRight size={13} />
         </button>
       </div>
     </section>

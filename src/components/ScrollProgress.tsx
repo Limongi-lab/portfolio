@@ -15,10 +15,10 @@ export default function ScrollProgress() {
   }, [])
 
   return (
-    <div className="fixed top-0 right-0 h-full w-[3px] bg-transparent z-50 hidden sm:block">
+    <div className="fixed top-0 inset-x-0 h-[3px] z-[60] pointer-events-none" aria-hidden="true">
       <div
-        className="w-full bg-gradient-to-b from-accent to-accent2 transition-[height] duration-150"
-        style={{ height: `${progress * 100}%` }}
+        className="h-full origin-left bg-gradient-to-r from-accent to-lime"
+        style={{ transform: `scaleX(${progress})` }}
       />
     </div>
   )

@@ -1,64 +1,60 @@
-import { projects, type Project } from "../data/content"
-
-function ProjectCard({ project, large }: { project: Project; large?: boolean }) {
-  return (
-    <a
-      href={project.href}
-      target="_blank"
-      rel="noreferrer"
-      className="group block rounded-lg border border-border bg-surface overflow-hidden hover:border-accent transition-colors"
-    >
-      <div className={`overflow-hidden bg-surface-2 ${large ? "h-56 md:h-64" : "h-40"}`}>
-        <img
-          src={project.image}
-          alt={project.name}
-          className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-        />
-      </div>
-      <div className={`p-6 ${large ? "md:p-8" : ""}`}>
-        <div className="flex items-start justify-between gap-4">
-          <h3 className={`font-display font-semibold ${large ? "text-2xl" : "text-lg"}`}>
-            {project.name}
-          </h3>
-          <span className="font-mono text-xs text-text-dim group-hover:text-accent2 transition-colors">
-            ↗
-          </span>
-        </div>
-        <p className="text-text-dim mt-3 leading-relaxed text-sm">
-          {project.description}
-        </p>
-        <div className="flex flex-wrap gap-2 mt-5">
-          {project.stack.map((tech) => (
-            <span key={tech} className="font-mono text-xs text-accent2">
-              {tech}
-              {tech !== project.stack[project.stack.length - 1] ? " ·" : ""}
-            </span>
-          ))}
-        </div>
-      </div>
-    </a>
-  )
-}
+import { FaArrowUpRightFromSquare } from "react-icons/fa6"
+import { projects } from "../data/content"
+import SectionHeading from "./SectionHeading"
 
 export default function Projects() {
-  const [featured, ...rest] = projects
-
   return (
-    <section id="projetos" className="px-6 md:px-16 max-w-5xl mx-auto py-24 border-t border-border">
-      <p className="flex items-center gap-2 text-sm text-accent2 mb-3">
-        <span className="text-accent">◆</span> Projetos
-      </p>
-      <h2 className="font-display font-semibold text-3xl md:text-4xl mb-12">
-        Alguns dos meus <span className="text-accent">projetos</span>
-      </h2>
-      <div className="grid md:grid-cols-2 gap-5">
-        <div className="md:col-span-2">
-          <ProjectCard project={featured} large />
-        </div>
-        {rest.map((project) => (
-          <ProjectCard key={project.name} project={project} />
+    <section id="projetos" className="py-20 border-t border-border">
+      <SectionHeading first="Projetos" ghost="recentes" />
+      <ul className="space-y-4">
+        {projects.map((project) => (
+          <li key={project.name}>
+            <a
+              href={project.href}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex flex-col sm:flex-row gap-5 rounded-2xl border border-border bg-surface/70 p-4 transition-colors hover:border-accent"
+            >
+              <div className="sm:w-48 shrink-0 h-36 sm:h-auto sm:min-h-32 rounded-xl overflow-hidden bg-surface-2">
+                <img
+                  src={project.image}
+                  alt={`Captura de tela do projeto ${project.name}`}
+                  loading="lazy"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="font-display font-semibold text-xl leading-tight">
+                    {project.name}
+                    {project.featured && (
+                      <span className="ml-3 align-middle rounded-full bg-lime px-2.5 py-0.5 text-[11px] font-semibold text-[#111]">
+                        Destaque
+                      </span>
+                    )}
+                  </h3>
+                  <FaArrowUpRightFromSquare
+                    size={13}
+                    className="mt-1.5 shrink-0 text-accent transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                    aria-hidden="true"
+                  />
+                </div>
+                <p className="text-text-dim text-sm leading-relaxed mt-2">{project.description}</p>
+                <ul className="flex flex-wrap gap-1.5 mt-4">
+                  {project.stack.map((tech) => (
+                    <li
+                      key={tech}
+                      className="rounded-full border border-border px-2.5 py-0.5 text-xs text-text-dim"
+                    >
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </a>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   )
 }

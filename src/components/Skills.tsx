@@ -14,6 +14,7 @@ import {
 import { FaJava } from "react-icons/fa"
 import type { IconType } from "react-icons"
 import { skills } from "../data/content"
+import SectionHeading from "./SectionHeading"
 
 const iconMap: Record<string, IconType> = {
   SiPython,
@@ -32,35 +33,28 @@ const iconMap: Record<string, IconType> = {
 
 export default function Skills() {
   return (
-    <section id="skills" className="px-6 md:px-16 max-w-5xl mx-auto py-24 border-t border-border">
-      <p className="flex items-center gap-2 text-sm text-accent2 mb-3">
-        <span className="text-accent">◆</span> Skills
-      </p>
-      <h2 className="font-display font-semibold text-3xl md:text-4xl mb-2">
-        Tecnologias que fazem parte da <span className="text-accent">minha jornada</span>
-      </h2>
-      <p className="text-text-dim mb-12">
-        Ferramentas que uso para construir produtos de ponta a ponta.
-      </p>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        {skills.map(({ name, icon, color }) => {
+    <section id="skills" className="py-20 border-t border-border">
+      <SectionHeading first="Minhas" ghost="ferramentas" />
+      <ul className="grid sm:grid-cols-2 gap-3">
+        {skills.map(({ name, icon, color, kind }) => {
           const Icon = iconMap[icon]
           return (
-            <div
+            <li
               key={name}
-              className="group flex flex-col items-center justify-center gap-3 rounded-xl border border-border bg-surface py-8 px-4 transition-all duration-300 hover:-translate-y-1 hover:border-accent"
+              style={{ "--skill": color } as React.CSSProperties}
+              className="group flex items-center gap-4 rounded-2xl border border-border bg-surface/70 p-3.5 transition-colors duration-300 hover:border-[var(--skill)]"
             >
-              <Icon
-                className="text-3xl transition-transform duration-300 group-hover:scale-110"
-                style={{ color }}
-              />
-              <span className="text-sm text-text-dim transition-colors duration-300 group-hover:text-text">
-                {name}
+              <span className="w-12 h-12 rounded-xl bg-[#f4f4f2] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105">
+                <Icon size={24} style={{ color }} />
               </span>
-            </div>
+              <span>
+                <span className="block font-display font-semibold leading-tight">{name}</span>
+                <span className="block text-xs text-text-dim mt-0.5">{kind}</span>
+              </span>
+            </li>
           )
         })}
-      </div>
+      </ul>
     </section>
   )
 }

@@ -18,8 +18,8 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-      aria-label="Alternar tema"
-      className="w-9 h-9 rounded-full border border-border flex items-center justify-center text-text-dim hover:text-accent2 hover:border-accent2 transition-colors shrink-0"
+      aria-label={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+      className="w-10 h-10 rounded-full border border-border bg-surface/80 backdrop-blur-md flex items-center justify-center text-text-dim hover:text-accent hover:border-accent transition-colors shrink-0"
     >
       {theme === "dark" ? <FaSun size={14} /> : <FaMoon size={14} />}
     </button>

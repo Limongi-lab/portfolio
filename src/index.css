@@ -1,55 +1,127 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Tektur:wght@500;700&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --color-bg: #0b0d10;
-  --color-surface: #13161b;
-  --color-surface-2: #191d24;
-  --color-border: #22262e;
-  --color-text: #e4e6ea;
-  --color-text-dim: #8a909c;
-  --color-accent: #6e56cf;
-  --color-accent2: #3fd1c9;
+  --color-bg: #0d0d0d;
+  --color-surface: #161616;
+  --color-surface-2: #1d1d1d;
+  --color-border: #2a2a2a;
+  --color-text: #f4f4f2;
+  --color-text-dim: #9a9a96;
+  --color-ghost: #565656;
+  --color-accent: #ee6a3c;
+  --color-accent2: #c8f53c;
+  --color-lime: #c8f53c;
+  --color-card: #f4f4f2;
+  --color-card-text: #111111;
 
   --font-display: "Poppins", sans-serif;
   --font-body: "Poppins", sans-serif;
+  --font-tech: "Tektur", "Poppins", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-caret: caret 1s steps(1) infinite;
+  --animate-rise: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes caret {
+    50% {
+      opacity: 0;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes float {
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+  --color-bg: #f3f1ec;
+  --color-surface: #ffffff;
+  --color-surface-2: #ebe8e1;
+  --color-border: #dcd8cf;
+  --color-text: #141414;
+  --color-text-dim: #5d5d58;
+  --color-ghost: #9d998f;
+  --color-accent: #d9531f;
+  --color-accent2: #4f6f00;
+  --color-card: #141414;
+  --color-card-text: #f4f4f2;
 }
 
 html {
   scroll-behavior: smooth;
-}
-
-:root[data-theme="light"] {
-  --color-bg: #f6f5f9;
-  --color-surface: #ffffff;
-  --color-surface-2: #f0eff6;
-  --color-border: #e2e0ea;
-  --color-text: #17181c;
-  --color-text-dim: #5b5f6b;
-  --color-accent: #6e56cf;
-  --color-accent2: #0f9c95;
-}
-
-:root[data-theme="light"] .decor-code {
-  display: none;
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  scroll-padding-top: 6rem;
 }
 
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #111;
+}
+
+/* Título em duas linhas: a primeira forte, a segunda "fantasma" (identidade Sawad). */
+.ghost-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+  font-size: clamp(2rem, 9.5cqw, 4.25rem);
+}
+.hero-title {
+  font-size: clamp(1.9rem, 10cqw, 4.75rem);
+}
+.content-col {
+  container-type: inline-size;
+}
+.ghost-title .ghost {
+  display: block;
+  color: var(--color-ghost);
+}
+
+.stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+:root[data-theme="light"] .stars {
+  display: none;
+}
+
+/* Linha da trajetória */
+.timeline-line {
+  background: linear-gradient(to bottom, var(--color-accent), var(--color-border) 85%);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -64,6 +136,6 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent2);
-  outline-offset: 2px;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
 }

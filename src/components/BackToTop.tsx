@@ -5,7 +5,7 @@ export default function BackToTop() {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 500)
+    const onScroll = () => setVisible(window.scrollY > 600)
     window.addEventListener("scroll", onScroll, { passive: true })
     onScroll()
     return () => window.removeEventListener("scroll", onScroll)
@@ -17,7 +17,7 @@ export default function BackToTop() {
     <button
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       aria-label="Voltar ao topo"
-      className="fixed bottom-6 right-6 z-50 w-11 h-11 rounded-full bg-accent text-white flex items-center justify-center shadow-[0_0_20px_-4px_var(--color-accent)] hover:bg-accent/90 transition-colors"
+      className="fixed bottom-24 md:bottom-6 right-5 z-40 w-11 h-11 rounded-full bg-accent text-[#111] flex items-center justify-center hover:brightness-110 transition"
     >
       <FaArrowUp size={14} />
     </button>

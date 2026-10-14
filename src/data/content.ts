@@ -7,21 +7,28 @@ export const profile = {
   linkedin: "https://linkedin.com/in/rafael-limongi",
 }
 
-export type Skill = { name: string; icon: string; color: string }
+export function gmailCompose(subject = "", body = "") {
+  const q = new URLSearchParams({ view: "cm", fs: "1", to: profile.email })
+  if (subject) q.set("su", subject)
+  if (body) q.set("body", body)
+  return `https://mail.google.com/mail/?${q.toString()}`
+}
+
+export type Skill = { name: string; icon: string; color: string; kind: string }
 
 export const skills: Skill[] = [
-  { name: "Python", icon: "SiPython", color: "#3776AB" },
-  { name: "Django", icon: "SiDjango", color: "#44B78B" },
-  { name: "PostgreSQL", icon: "SiPostgresql", color: "#4169E1" },
-  { name: "Docker", icon: "SiDocker", color: "#2496ED" },
-  { name: "React", icon: "SiReact", color: "#61DAFB" },
-  { name: "TypeScript", icon: "SiTypescript", color: "#3178C6" },
-  { name: "JavaScript", icon: "SiJavascript", color: "#F7DF1E" },
-  { name: "Node.js", icon: "SiNodedotjs", color: "#83CD29" },
-  { name: "Java", icon: "FaJava", color: "#F89820" },
-  { name: "MongoDB", icon: "SiMongodb", color: "#47A248" },
-  { name: "SQLite", icon: "SiSqlite", color: "#3FA6E8" },
-  { name: "Git", icon: "SiGit", color: "#F05033" },
+  { name: "Python", icon: "SiPython", color: "#3776AB", kind: "Linguagem" },
+  { name: "Django", icon: "SiDjango", color: "#44B78B", kind: "Framework web" },
+  { name: "PostgreSQL", icon: "SiPostgresql", color: "#4169E1", kind: "Banco de dados" },
+  { name: "Docker", icon: "SiDocker", color: "#2496ED", kind: "Containers" },
+  { name: "React", icon: "SiReact", color: "#61DAFB", kind: "Biblioteca de interface" },
+  { name: "TypeScript", icon: "SiTypescript", color: "#3178C6", kind: "Linguagem" },
+  { name: "JavaScript", icon: "SiJavascript", color: "#F7DF1E", kind: "Linguagem" },
+  { name: "Node.js", icon: "SiNodedotjs", color: "#83CD29", kind: "Ambiente de execução" },
+  { name: "Java", icon: "FaJava", color: "#F89820", kind: "Linguagem" },
+  { name: "MongoDB", icon: "SiMongodb", color: "#47A248", kind: "Banco NoSQL" },
+  { name: "SQLite", icon: "SiSqlite", color: "#3FA6E8", kind: "Banco de dados" },
+  { name: "Git", icon: "SiGit", color: "#F05033", kind: "Versionamento" },
 ]
 
 export type Project = {
@@ -46,9 +53,9 @@ export const projects: Project[] = [
   {
     name: "UFU Mia",
     description:
-      "Site do Projeto Mia, extensão de proteção animal da UFU: cadastro de animais para adoção, histórias de resgates e doação via Pix.",
-    stack: ["Django", "React", "TypeScript"],
-    href: "https://github.com/Limongi-lab/ufu.mia",
+      "Site do Projeto Mia, extensão de proteção animal da UFU, no ar de verdade: gatos para adoção, doação via Pix e um painel de administração com login para a equipe editar fotos e textos sem mexer em código.",
+    stack: ["Django", "Django REST Framework", "React", "Vite", "Cloudinary", "Vercel", "Render"],
+    href: "https://ufumia.vercel.app/",
     image: "/projects/ufu-mia.png",
   },
   {
@@ -131,3 +138,36 @@ export const experience = [
       "Desenvolvimento de comunicação e relacionamento com clientes, hoje aplicado para entender melhor o que quem usa um produto realmente precisa.",
   },
 ]
+
+export type JourneyItem = {
+  kind: "Formação" | "Experiência"
+  period: string
+  title: string
+  place: string
+  description?: string
+}
+
+// Ordem do mais recente para o mais antigo.
+export const journey: JourneyItem[] = [
+  {
+    kind: "Experiência",
+    period: "12/2025 – 06/2026",
+    title: "Estágio comercial (SDR)",
+    place: "Septem Capulus",
+    description: experience[0].description,
+  },
+  {
+    kind: "Formação",
+    period: "2024 – 2028",
+    title: "Engenharia de Computação",
+    place: "UNIUBE",
+  },
+  {
+    kind: "Formação",
+    period: "2023 – 2028",
+    title: "Gestão da Informação",
+    place: "UFU",
+  },
+]
+
+export const typedWords = ["Fullstack", "Django+React", "Automação", "Dados"]
