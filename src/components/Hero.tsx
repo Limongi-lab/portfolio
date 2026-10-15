@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { FaArrowRight, FaDatabase, FaLayerGroup } from "react-icons/fa6"
 import { profile, typedWords } from "../data/content"
+import { useLang } from "../i18n/context"
+import { ui } from "../i18n/ui"
 
 function useTyped(words: string[]) {
   const reduced =
@@ -34,18 +36,19 @@ function useTyped(words: string[]) {
     return () => clearTimeout(timer)
   }, [words, reduced])
 
-  return text
+  return reduced ? words[0] : text
 }
 
 export default function Hero() {
-  const typed = useTyped(typedWords)
+  const { lang, t } = useLang()
+  const typed = useTyped(typedWords[lang])
 
   return (
     <section id="topo" className="pt-28 lg:pt-32 pb-20">
       <h1 className="ghost-title hero-title animate-rise">
-        <span className="sr-only">{profile.name}, desenvolvedor fullstack</span>
+        <span className="sr-only">{profile.name}, {t(ui.heroSr)}</span>
         <span aria-hidden="true" className="block">
-          Desenvolvedor
+          {t(ui.heroLine)}
         </span>
         <span aria-hidden="true" className="ghost min-h-[1em]">
           {typed}
@@ -57,8 +60,7 @@ export default function Hero() {
         className="text-text-dim leading-relaxed max-w-md mt-6 animate-rise"
         style={{ animationDelay: "0.15s" }}
       >
-        Construo produtos completos, da modelagem de dados e APIs em Django até a interface em
-        React. Gosto de automação, dados e de resolver problemas de verdade.
+        {t(ui.heroIntro)}
       </p>
 
       <div
@@ -71,12 +73,12 @@ export default function Hero() {
         >
           <FaDatabase size={20} />
           <p className="font-display font-semibold text-lg leading-snug max-w-[14rem]">
-            APIs, banco de dados e automação
+            {t(ui.heroCardOne)}
           </p>
           <span className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-[#111] text-white flex items-center justify-center transition-transform group-hover:translate-x-1">
             <FaArrowRight size={13} />
           </span>
-          <span className="sr-only">Ver projetos</span>
+          <span className="sr-only">{t(ui.seeProjects)}</span>
         </a>
 
         <a
@@ -99,12 +101,12 @@ export default function Hero() {
           </svg>
           <FaLayerGroup size={20} className="relative" />
           <p className="relative font-display font-semibold text-lg leading-snug max-w-[14rem]">
-            React, TypeScript e interfaces
+            {t(ui.heroCardTwo)}
           </p>
           <span className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-[#111] text-white flex items-center justify-center transition-transform group-hover:translate-x-1">
             <FaArrowRight size={13} />
           </span>
-          <span className="sr-only">Ver ferramentas</span>
+          <span className="sr-only">{t(ui.seeTools)}</span>
         </a>
       </div>
     </section>

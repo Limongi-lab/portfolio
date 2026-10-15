@@ -1,21 +1,25 @@
 import { useEffect, useState } from "react"
 import { FaAward, FaCode, FaHouse, FaRegEnvelope, FaRoute, FaToolbox, FaUser } from "react-icons/fa6"
 import type { IconType } from "react-icons"
+import { useLang, type L } from "../i18n/context"
+import { ui } from "../i18n/ui"
+import LangSwitch from "./LangSwitch"
 import ThemeToggle from "./ThemeToggle"
 
-type Item = { id: string; label: string; icon: IconType }
+type Item = { id: string; label: L; icon: IconType }
 
 const items: Item[] = [
-  { id: "topo", label: "Início", icon: FaHouse },
-  { id: "sobre", label: "Sobre", icon: FaUser },
-  { id: "skills", label: "Ferramentas", icon: FaToolbox },
-  { id: "projetos", label: "Projetos", icon: FaCode },
-  { id: "trajetoria", label: "Trajetória", icon: FaRoute },
-  { id: "certificados", label: "Certificados", icon: FaAward },
-  { id: "contato", label: "Contato", icon: FaRegEnvelope },
+  { id: "topo", label: ui.navHome, icon: FaHouse },
+  { id: "sobre", label: ui.navAbout, icon: FaUser },
+  { id: "skills", label: ui.navSkills, icon: FaToolbox },
+  { id: "projetos", label: ui.navProjects, icon: FaCode },
+  { id: "trajetoria", label: ui.navJourney, icon: FaRoute },
+  { id: "certificados", label: ui.navCerts, icon: FaAward },
+  { id: "contato", label: ui.navContact, icon: FaRegEnvelope },
 ]
 
 export default function Nav() {
+  const { t } = useLang()
   const [active, setActive] = useState("topo")
 
   useEffect(() => {
@@ -42,21 +46,22 @@ export default function Nav() {
           <a
             href="#topo"
             className="pointer-events-auto font-display font-bold text-xl md:text-2xl tracking-tight"
-            aria-label="Rafael Limongi, ir ao topo"
+            aria-label={t(ui.logoAria)}
           >
             <span className="text-accent">&lt;</span>
             <span className="text-text">Limongi</span>
             <span className="text-accent2">Dev</span>
             <span className="text-accent">/&gt;</span>
           </a>
-          <div className="pointer-events-auto">
+          <div className="pointer-events-auto flex items-center gap-2">
+            <LangSwitch />
             <ThemeToggle />
           </div>
         </div>
       </header>
 
       <nav
-        aria-label="Seções"
+        aria-label={t(ui.navAria)}
         className="fixed z-50 pointer-events-none inset-x-0 bottom-4 md:bottom-auto md:top-4 flex justify-center px-4"
       >
         <ul className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-surface/80 backdrop-blur-md p-1.5 shadow-lg shadow-black/20">
@@ -66,7 +71,7 @@ export default function Nav() {
               <li key={id}>
                 <a
                   href={`#${id}`}
-                  aria-label={label}
+                  aria-label={t(label)}
                   aria-current={isActive ? "true" : undefined}
                   className={`flex items-center gap-2 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
                     isActive
@@ -75,7 +80,7 @@ export default function Nav() {
                   }`}
                 >
                   <Icon size={15} />
-                  {isActive && <span className="hidden sm:inline">{label}</span>}
+                  {isActive && <span className="hidden sm:inline">{t(label)}</span>}
                 </a>
               </li>
             )

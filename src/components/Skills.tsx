@@ -14,6 +14,8 @@ import {
 import { FaJava } from "react-icons/fa"
 import type { IconType } from "react-icons"
 import { skills } from "../data/content"
+import { useLang } from "../i18n/context"
+import { ui } from "../i18n/ui"
 import SectionHeading from "./SectionHeading"
 
 const iconMap: Record<string, IconType> = {
@@ -32,9 +34,10 @@ const iconMap: Record<string, IconType> = {
 }
 
 export default function Skills() {
+  const { t } = useLang()
   return (
     <section id="skills" className="py-20 border-t border-border">
-      <SectionHeading first="Minhas" ghost="ferramentas" />
+      <SectionHeading first={t(ui.skillsFirst)} ghost={t(ui.skillsGhost)} />
       <ul className="grid sm:grid-cols-2 gap-3">
         {skills.map(({ name, icon, color, kind }) => {
           const Icon = iconMap[icon]
@@ -49,7 +52,7 @@ export default function Skills() {
               </span>
               <span>
                 <span className="block font-display font-semibold leading-tight">{name}</span>
-                <span className="block text-xs text-text-dim mt-0.5">{kind}</span>
+                <span className="block text-xs text-text-dim mt-0.5">{t(kind)}</span>
               </span>
             </li>
           )

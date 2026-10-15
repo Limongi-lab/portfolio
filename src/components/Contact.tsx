@@ -1,12 +1,15 @@
 import { useState } from "react"
 import { FaCheck, FaCopy, FaGithub, FaLinkedinIn, FaPaperPlane, FaRegEnvelope } from "react-icons/fa6"
 import { gmailCompose, profile } from "../data/content"
+import { useLang } from "../i18n/context"
+import { ui } from "../i18n/ui"
 import SectionHeading from "./SectionHeading"
 
 const fieldClass =
   "w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm placeholder:text-text-dim/70 focus:border-accent focus:outline-none transition-colors"
 
 export default function Contact() {
+  const { t } = useLang()
   const [copied, setCopied] = useState(false)
   const [form, setForm] = useState({ name: "", email: "", message: "", website: "" })
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error" | "activate">("idle")
@@ -24,7 +27,7 @@ export default function Contact() {
     setDetail("")
 
     const web3Key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
-    const subject = `Contato pelo portfólio: ${form.name}`
+    const subject = `${t(ui.formSubject)}: ${form.name}`
 
     try {
       const res = web3Key
@@ -67,13 +70,13 @@ export default function Contact() {
         setStatus("error")
       }
     } catch {
-      setDetail("sem conexão com o serviço de envio")
+      setDetail(t(ui.errorNoConn))
       setStatus("error")
     }
   }
 
   const fallbackHref = gmailCompose(
-    `Contato pelo portfólio: ${form.name}`,
+    `${t(ui.formSubject)}: ${form.name}`,
     `${form.message}\n\n${form.name}\n${form.email}`,
   )
 
@@ -88,31 +91,31 @@ export default function Contact() {
   }
 
   const links = [
-    { href: profile.linkedin, label: "LinkedIn", hint: "Conectar", icon: FaLinkedinIn },
-    { href: profile.github, label: "GitHub", hint: "Ver código", icon: FaGithub },
+    { href: profile.linkedin, label: "LinkedIn", hint: t(ui.hintConnect), icon: FaLinkedinIn },
+    { href: profile.github, label: "GitHub", hint: t(ui.hintCode), icon: FaGithub },
   ]
 
   return (
     <section id="contato" className="py-20 border-t border-border">
-      <SectionHeading first="Vamos" ghost="conversar?" />
+      <SectionHeading first={t(ui.contactFirst)} ghost={t(ui.contactGhost)} />
       <p className="text-text-dim max-w-md leading-relaxed mb-8">
-        Aberto a oportunidades como desenvolvedor júnior e a bater um papo sobre os projetos acima.
+        {t(ui.contactIntro)}
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <div className="grid sm:grid-cols-2 gap-3">
           <label className="block">
-            <span className="sr-only">Seu nome</span>
-            <input required value={form.name} onChange={update("name")} placeholder="Seu nome" className={fieldClass} />
+            <span className="sr-only">{t(ui.formName)}</span>
+            <input required value={form.name} onChange={update("name")} placeholder={t(ui.formName)} className={fieldClass} />
           </label>
           <label className="block">
-            <span className="sr-only">Seu email</span>
+            <span className="sr-only">{t(ui.formEmail)}</span>
             <input
               required
               type="email"
               value={form.email}
               onChange={update("email")}
-              placeholder="Seu email"
+              placeholder={t(ui.formEmail)}
               className={fieldClass}
             />
           </label>
@@ -128,13 +131,13 @@ export default function Contact() {
           className="hidden"
         />
         <label className="block">
-          <span className="sr-only">Mensagem</span>
+          <span className="sr-only">{t(ui.formMessage)}</span>
           <textarea
             required
             rows={5}
             value={form.message}
             onChange={update("message")}
-            placeholder="Como posso ajudar?"
+            placeholder={t(ui.formMessage)}
             className={`${fieldClass} resize-none`}
           />
         </label>
@@ -143,29 +146,28 @@ export default function Contact() {
           disabled={status === "sending"}
           className="w-full flex items-center justify-center gap-2 rounded-xl bg-accent text-[#111] font-semibold py-3.5 hover:brightness-110 transition disabled:opacity-60 disabled:cursor-wait"
         >
-          <FaPaperPlane size={14} /> {status === "sending" ? "Enviando..." : "Enviar mensagem"}
+          <FaPaperPlane size={14} /> {status === "sending" ? t(ui.formSending) : t(ui.formSend)}
         </button>
         <div aria-live="polite" className="text-sm min-h-5">
           {status === "sent" && (
             <p className="flex items-center gap-2 text-accent2">
-              <FaCheck size={13} /> Mensagem enviada! Respondo no email que você informou.
+              <FaCheck size={13} /> {t(ui.formSent)}
             </p>
           )}
           {status === "activate" && (
             <p className="text-text-dim">
-              Primeiro envio: o serviço mandou um email de ativação para {profile.email}. Abra, clique em
-              Activate Form (olhe o spam) e envie de novo. Sua mensagem{" "}
+              {t(ui.activateLead)} {profile.email}. {t(ui.activateRest)}{" "}
               <a href={fallbackHref} target="_blank" rel="noreferrer" className="text-accent underline underline-offset-2">
-                também pode seguir pelo Gmail
+                {t(ui.activateLink)}
               </a>
               .
             </p>
           )}
           {status === "error" && (
             <p className="text-text-dim">
-              Não consegui enviar agora{detail ? ` (${detail})` : ""}.{" "}
+              {t(ui.errorLead)}{detail ? ` (${detail})` : ""}.{" "}
               <a href={fallbackHref} target="_blank" rel="noreferrer" className="text-accent underline underline-offset-2">
-                Abrir no Gmail com a mensagem pronta
+                {t(ui.errorLink)}
               </a>
               .
             </p>
@@ -198,14 +200,14 @@ export default function Contact() {
           >
             <FaRegEnvelope size={20} className="text-accent shrink-0" />
             <span className="min-w-0">
-              <span className="block font-display font-semibold leading-tight">Email</span>
+              <span className="block font-display font-semibold leading-tight">{t(ui.emailLabel)}</span>
               <span className="block text-xs text-text-dim truncate">{profile.email}</span>
             </span>
           </a>
           <button
             type="button"
             onClick={copyEmail}
-            aria-label={copied ? "Email copiado" : "Copiar email"}
+            aria-label={copied ? t(ui.emailCopied) : t(ui.copyEmail)}
             className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full border border-border flex items-center justify-center text-text-dim hover:text-accent hover:border-accent transition-colors"
           >
             {copied ? <FaCheck size={13} className="text-accent" /> : <FaCopy size={13} />}

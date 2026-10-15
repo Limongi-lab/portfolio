@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { FaMoon, FaSun } from "react-icons/fa"
+import { useLang } from "../i18n/context"
+import { ui } from "../i18n/ui"
 
 function getInitialTheme(): "dark" | "light" {
   const stored = localStorage.getItem("theme")
@@ -8,6 +10,7 @@ function getInitialTheme(): "dark" | "light" {
 }
 
 export default function ThemeToggle() {
+  const { t } = useLang()
   const [theme, setTheme] = useState<"dark" | "light">(getInitialTheme)
 
   useEffect(() => {
@@ -18,7 +21,7 @@ export default function ThemeToggle() {
   return (
     <button
       onClick={() => setTheme((t) => (t === "dark" ? "light" : "dark"))}
-      aria-label={theme === "dark" ? "Mudar para modo claro" : "Mudar para modo escuro"}
+      aria-label={theme === "dark" ? t(ui.themeToLight) : t(ui.themeToDark)}
       className="w-10 h-10 rounded-full border border-border bg-surface/80 backdrop-blur-md flex items-center justify-center text-text-dim hover:text-accent hover:border-accent transition-colors shrink-0"
     >
       {theme === "dark" ? <FaSun size={14} /> : <FaMoon size={14} />}

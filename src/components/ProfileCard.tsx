@@ -1,5 +1,7 @@
 import { FaCode, FaGithub, FaLinkedinIn, FaRegEnvelope } from "react-icons/fa6"
 import { gmailCompose, profile } from "../data/content"
+import { useLang } from "../i18n/context"
+import { ui } from "../i18n/ui"
 
 const socials = [
   { href: profile.linkedin, label: "LinkedIn", icon: FaLinkedinIn, external: true },
@@ -8,6 +10,7 @@ const socials = [
 ]
 
 export default function ProfileCard() {
+  const { t } = useLang()
   return (
     <aside className="relative rounded-[28px] bg-card text-card-text p-5 shadow-2xl shadow-black/30">
       {/* arco tracejado, assinatura da referência */}
@@ -36,7 +39,7 @@ export default function ProfileCard() {
 
       <div className="text-center pt-5">
         <p className="font-display font-bold text-2xl leading-tight">{profile.name}</p>
-        <p className="text-sm opacity-70 mt-1">{profile.location}</p>
+        <p className="text-sm opacity-70 mt-1">{t(ui.location)}</p>
 
         <div className="flex items-center gap-3 my-4" aria-hidden="true">
           <span className="flex-1 border-t-2 border-dashed border-accent/70" />
@@ -47,7 +50,7 @@ export default function ProfileCard() {
         </div>
 
         <p className="text-sm leading-relaxed opacity-80">
-          Transformo problemas reais em software que funciona, do banco de dados à interface.
+          {t(ui.cardTagline)}
         </p>
 
         <div className="flex justify-center gap-3 mt-5">
@@ -69,7 +72,7 @@ export default function ProfileCard() {
             <span className="absolute inset-0 rounded-full bg-[#4fae67] animate-ping opacity-60" />
             <span className="relative w-2 h-2 rounded-full bg-[#4fae67]" />
           </span>
-          Aberto a oportunidades
+          {t(ui.available)}
         </p>
       </div>
     </aside>

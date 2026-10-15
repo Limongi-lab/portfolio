@@ -1,11 +1,14 @@
 import { FaArrowUpRightFromSquare } from "react-icons/fa6"
 import { projects } from "../data/content"
+import { useLang } from "../i18n/context"
+import { ui } from "../i18n/ui"
 import SectionHeading from "./SectionHeading"
 
 export default function Projects() {
+  const { t } = useLang()
   return (
     <section id="projetos" className="py-20 border-t border-border">
-      <SectionHeading first="Projetos" ghost="recentes" />
+      <SectionHeading first={t(ui.projectsFirst)} ghost={t(ui.projectsGhost)} />
       <ul className="space-y-4">
         {projects.map((project) => (
           <li key={project.name}>
@@ -18,7 +21,7 @@ export default function Projects() {
               <div className="sm:w-48 shrink-0 h-36 sm:h-auto sm:min-h-32 rounded-xl overflow-hidden bg-surface-2">
                 <img
                   src={project.image}
-                  alt={`Captura de tela do projeto ${project.name}`}
+                  alt={`${t(ui.shotAlt)} ${project.name}`}
                   loading="lazy"
                   className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                 />
@@ -29,7 +32,7 @@ export default function Projects() {
                     {project.name}
                     {project.featured && (
                       <span className="ml-3 align-middle rounded-full bg-lime px-2.5 py-0.5 text-[11px] font-semibold text-[#111]">
-                        Destaque
+                        {t(ui.featured)}
                       </span>
                     )}
                   </h3>
@@ -39,7 +42,7 @@ export default function Projects() {
                     aria-hidden="true"
                   />
                 </div>
-                <p className="text-text-dim text-sm leading-relaxed mt-2">{project.description}</p>
+                <p className="text-text-dim text-sm leading-relaxed mt-2">{t(project.description)}</p>
                 <ul className="flex flex-wrap gap-1.5 mt-4">
                   {project.stack.map((tech) => (
                     <li
