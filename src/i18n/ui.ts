@@ -1,7 +1,6 @@
 import type { L } from "./context"
 
 export const ui = {
-  // navegação
   navHome: { pt: "Início", en: "Home" },
   navAbout: { pt: "Sobre", en: "About" },
   navSkills: { pt: "Ferramentas", en: "Tools" },
@@ -16,7 +15,6 @@ export const ui = {
   themeToDark: { pt: "Mudar para modo escuro", en: "Switch to dark mode" },
   backToTop: { pt: "Voltar ao topo", en: "Back to top" },
 
-  // card de perfil
   location: { pt: "Uberlândia, MG", en: "Uberlândia, MG, Brazil" },
   cardTagline: {
     pt: "Transformo problemas reais em software que funciona, do banco de dados à interface.",
@@ -24,7 +22,6 @@ export const ui = {
   },
   available: { pt: "Aberto a oportunidades", en: "Open to opportunities" },
 
-  // hero
   heroSr: { pt: "desenvolvedor fullstack", en: "fullstack developer" },
   heroLine: { pt: "Desenvolvedor", en: "Developer" },
   heroIntro: {
@@ -36,7 +33,6 @@ export const ui = {
   seeProjects: { pt: "Ver projetos", en: "See projects" },
   seeTools: { pt: "Ver ferramentas", en: "See tools" },
 
-  // sobre
   aboutFirst: { pt: "Sobre", en: "About" },
   aboutGhost: { pt: "mim", en: "me" },
   about1: {
@@ -52,7 +48,6 @@ export const ui = {
     en: "Today I build complete projects, from the Django data model to the React interface, favoring code I understand line by line and that solves a real problem, not just an exercise.",
   },
 
-  // seções
   skillsFirst: { pt: "Minhas", en: "My" },
   skillsGhost: { pt: "ferramentas", en: "tools" },
   projectsFirst: { pt: "Projetos", en: "Recent" },
@@ -69,7 +64,6 @@ export const ui = {
   certPrev: { pt: "Certificados anteriores", en: "Previous certificates" },
   certNext: { pt: "Próximos certificados", en: "Next certificates" },
 
-  // contato
   contactFirst: { pt: "Vamos", en: "Let's" },
   contactGhost: { pt: "conversar?", en: "talk?" },
   contactIntro: {
@@ -104,9 +98,47 @@ export const ui = {
   copyEmail: { pt: "Copiar email", en: "Copy email" },
   emailCopied: { pt: "Email copiado", en: "Email copied" },
 
-  // rodapé
   footerTagline: {
     pt: "Do dado à interface, feito para ser usado.",
     en: "From data to interface, built to be used.",
   },
+
+  modeToNetwork: { pt: "Modo rede", en: "Network mode" },
+  modeToClassic: { pt: "Modo clássico", en: "Classic mode" },
+  netHint: {
+    pt: "Clique em um dispositivo para explorar. Cada um é uma parte do meu portfólio.",
+    en: "Click a device to explore. Each one is a part of my portfolio.",
+  },
+  netWelcome: {
+    pt: "Esta topologia é o meu portfólio. Explore pelos dispositivos ou pelo terminal.",
+    en: "This topology is my portfolio. Explore through the devices or the terminal.",
+  },
+  netTry: { pt: "Experimente no terminal", en: "Try it in the terminal" },
+  netConnected: { pt: "conectado", en: "connected" },
+  tabSummary: { pt: "Resumo", en: "Summary" },
+  tabConfig: { pt: "Config", en: "Config" },
+  tabCli: { pt: "CLI", en: "CLI" },
+  devInternet: { pt: "Internet", en: "Internet" },
+  devAbout: { pt: "Sobre mim", en: "About me" },
+  devTools: { pt: "Ferramentas", en: "Tools" },
+  devContact: { pt: "Contato", en: "Contact" },
+  devJourney: { pt: "Trajetória", en: "Journey" },
+  devCalc: { pt: "Calculadora de sub-redes", en: "Subnet calculator" },
+  devCerts: { pt: "Certificados", en: "Certificates" },
+  openProject: { pt: "Abrir projeto", en: "Open project" },
+  cliPlaceholder: { pt: "Digite um comando", en: "Type a command" },
+  cliAria: { pt: "Terminal", en: "Terminal" },
+  subnetIntro: {
+    pt: "Digite um endereço com prefixo e veja máscara, rede, broadcast e hosts.",
+    en: "Enter an address with prefix to see mask, network, broadcast and hosts.",
+  },
+  subnetInvalid: { pt: "Use o formato 192.168.10.0/24", en: "Use the format 192.168.10.0/24" },
+  subnetNetwork: { pt: "Endereço de rede", en: "Network address" },
+  subnetMask: { pt: "Máscara", en: "Subnet mask" },
+  subnetWildcard: { pt: "Wildcard", en: "Wildcard" },
+  subnetBroadcast: { pt: "Broadcast", en: "Broadcast" },
+  subnetFirst: { pt: "Primeiro host", en: "First host" },
+  subnetLast: { pt: "Último host", en: "Last host" },
+  subnetHosts: { pt: "Hosts utilizáveis", en: "Usable hosts" },
+  subnetExamples: { pt: "Exemplos", en: "Examples" },
 } satisfies Record<string, L>

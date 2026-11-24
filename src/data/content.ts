@@ -162,7 +162,6 @@ export type JourneyItem = {
   description?: L
 }
 
-// Ordem do mais recente para o mais antigo.
 export const journey: JourneyItem[] = [
   {
     kind: "experience",

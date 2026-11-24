@@ -1,37 +1,8 @@
-import {
-  SiDjango,
-  SiDocker,
-  SiGit,
-  SiJavascript,
-  SiMongodb,
-  SiNodedotjs,
-  SiPostgresql,
-  SiPython,
-  SiReact,
-  SiSqlite,
-  SiTypescript,
-} from "react-icons/si"
-import { FaJava } from "react-icons/fa"
-import type { IconType } from "react-icons"
 import { skills } from "../data/content"
 import { useLang } from "../i18n/context"
 import { ui } from "../i18n/ui"
 import SectionHeading from "./SectionHeading"
-
-const iconMap: Record<string, IconType> = {
-  SiPython,
-  SiDjango,
-  SiPostgresql,
-  SiDocker,
-  SiReact,
-  SiTypescript,
-  SiJavascript,
-  SiNodedotjs,
-  FaJava,
-  SiMongodb,
-  SiSqlite,
-  SiGit,
-}
+import { skillIcons } from "./skillIcons"
 
 export default function Skills() {
   const { t } = useLang()
@@ -40,7 +11,7 @@ export default function Skills() {
       <SectionHeading first={t(ui.skillsFirst)} ghost={t(ui.skillsGhost)} />
       <ul className="grid sm:grid-cols-2 gap-3">
         {skills.map(({ name, icon, color, kind }) => {
-          const Icon = iconMap[icon]
+          const Icon = skillIcons[icon]
           return (
             <li
               key={name}

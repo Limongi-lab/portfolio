@@ -78,7 +78,6 @@ export default function Stars() {
           if (s.x < -4) s.x = w + 4
           if (s.x > w + 4) s.x = -4
 
-          // empurra as estrelas para longe do cursor e deixa voltarem devagar
           const px = s.x + s.ox
           const py = s.y + s.oy - ((scroll * s.depth * 0.25) % h)
           const dx = px - mouse.x

@@ -82,7 +82,6 @@ body {
   color: #111;
 }
 
-/* Título em duas linhas: a primeira forte, a segunda "fantasma" (identidade Sawad). */
 .ghost-title {
   font-family: var(--font-display);
   font-weight: 800;
@@ -112,7 +111,6 @@ body {
   display: none;
 }
 
-/* Linha da trajetória */
 .timeline-line {
   background: linear-gradient(to bottom, var(--color-accent), var(--color-border) 85%);
 }
@@ -138,4 +136,9 @@ body {
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
+}
+
+.workspace-grid {
+  background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+  background-size: 24px 24px;
 }

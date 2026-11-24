@@ -8,7 +8,8 @@ import SectionHeading from "./SectionHeading"
 const fieldClass =
   "w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm placeholder:text-text-dim/70 focus:border-accent focus:outline-none transition-colors"
 
-export default function Contact() {
+export default function Contact({ variant = "section" }: { variant?: "section" | "panel" }) {
+  const panel = variant === "panel"
   const { t } = useLang()
   const [copied, setCopied] = useState(false)
   const [form, setForm] = useState({ name: "", email: "", message: "", website: "" })
@@ -18,11 +19,9 @@ export default function Contact() {
   const update = (key: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }))
 
-  // Envio real, sem servidor próprio. Com VITE_WEB3FORMS_KEY usa o Web3Forms;
-  // sem a chave, usa o FormSubmit (que pede ativação no primeiro envio).
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (form.website) return // campo escondido: só robôs preenchem
+    if (form.website) return
     setStatus("sending")
     setDetail("")
 
@@ -86,7 +85,7 @@ export default function Contact() {
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch {
-      // clipboard indisponível
+      setCopied(false)
     }
   }
 
@@ -96,9 +95,9 @@ export default function Contact() {
   ]
 
   return (
-    <section id="contato" className="py-20 border-t border-border">
-      <SectionHeading first={t(ui.contactFirst)} ghost={t(ui.contactGhost)} />
-      <p className="text-text-dim max-w-md leading-relaxed mb-8">
+    <section id={panel ? undefined : "contato"} className={panel ? "" : "py-20 border-t border-border"}>
+      {!panel && <SectionHeading first={t(ui.contactFirst)} ghost={t(ui.contactGhost)} />}
+      <p className={`text-text-dim max-w-md leading-relaxed ${panel ? "mb-5 text-sm" : "mb-8"}`}>
         {t(ui.contactIntro)}
       </p>
 
@@ -175,7 +174,7 @@ export default function Contact() {
         </div>
       </form>
 
-      <div className="grid sm:grid-cols-3 gap-3 mt-10">
+      <div className={`grid gap-3 ${panel ? "mt-6" : "sm:grid-cols-3 mt-10"}`}>
         {links.map(({ href, label, hint, icon: Icon }) => (
           <a
             key={label}

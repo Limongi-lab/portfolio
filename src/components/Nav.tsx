@@ -4,6 +4,7 @@ import type { IconType } from "react-icons"
 import { useLang, type L } from "../i18n/context"
 import { ui } from "../i18n/ui"
 import LangSwitch from "./LangSwitch"
+import ModeSwitch, { type Mode } from "./ModeSwitch"
 import ThemeToggle from "./ThemeToggle"
 
 type Item = { id: string; label: L; icon: IconType }
@@ -18,14 +19,12 @@ const items: Item[] = [
   { id: "contato", label: ui.navContact, icon: FaRegEnvelope },
 ]
 
-export default function Nav() {
+export default function Nav({ mode, onModeChange }: { mode: Mode; onModeChange: (mode: Mode) => void }) {
   const { t } = useLang()
   const [active, setActive] = useState("topo")
 
   useEffect(() => {
-    const sections = items
-      .map((i) => document.getElementById(i.id))
-      .filter((el): el is HTMLElement => !!el)
+    const sections = items.map((i) => document.getElementById(i.id)).filter((el): el is HTMLElement => !!el)
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -37,7 +36,7 @@ export default function Nav() {
     )
     sections.forEach((s) => observer.observe(s))
     return () => observer.disconnect()
-  }, [])
+  }, [mode])
 
   return (
     <>
@@ -54,39 +53,42 @@ export default function Nav() {
             <span className="text-accent">/&gt;</span>
           </a>
           <div className="pointer-events-auto flex items-center gap-2">
+            <ModeSwitch mode={mode} onChange={onModeChange} />
             <LangSwitch />
             <ThemeToggle />
           </div>
         </div>
       </header>
 
-      <nav
-        aria-label={t(ui.navAria)}
-        className="fixed z-50 pointer-events-none inset-x-0 bottom-4 md:bottom-auto md:top-4 flex justify-center px-4"
-      >
-        <ul className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-surface/80 backdrop-blur-md p-1.5 shadow-lg shadow-black/20">
-          {items.map(({ id, label, icon: Icon }) => {
-            const isActive = active === id
-            return (
-              <li key={id}>
-                <a
-                  href={`#${id}`}
-                  aria-label={t(label)}
-                  aria-current={isActive ? "true" : undefined}
-                  className={`flex items-center gap-2 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
-                    isActive
-                      ? "bg-accent text-[#111] px-3.5"
-                      : "w-10 justify-center text-text-dim hover:text-text hover:bg-surface-2"
-                  }`}
-                >
-                  <Icon size={15} />
-                  {isActive && <span className="hidden sm:inline">{t(label)}</span>}
-                </a>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
+      {mode === "classic" && (
+        <nav
+          aria-label={t(ui.navAria)}
+          className="fixed z-50 pointer-events-none inset-x-0 bottom-4 md:bottom-auto md:top-4 flex justify-center px-4"
+        >
+          <ul className="pointer-events-auto flex items-center gap-1 rounded-full border border-border bg-surface/80 backdrop-blur-md p-1.5 shadow-lg shadow-black/20">
+            {items.map(({ id, label, icon: Icon }) => {
+              const isActive = active === id
+              return (
+                <li key={id}>
+                  <a
+                    href={`#${id}`}
+                    aria-label={t(label)}
+                    aria-current={isActive ? "true" : undefined}
+                    className={`flex items-center gap-2 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                      isActive
+                        ? "bg-accent text-[#111] px-3.5"
+                        : "w-10 justify-center text-text-dim hover:text-text hover:bg-surface-2"
+                    }`}
+                  >
+                    <Icon size={15} />
+                    {isActive && <span className="hidden sm:inline">{t(label)}</span>}
+                  </a>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
+      )}
     </>
   )
 }
