@@ -1,4 +1,5 @@
 import { FaJava } from "react-icons/fa"
+import { FaEthernet, FaNetworkWired, FaRoute, FaSitemap } from "react-icons/fa6"
 import type { IconType } from "react-icons"
 import {
   SiDjango,
@@ -27,4 +28,8 @@ export const skillIcons: Record<string, IconType> = {
   SiMongodb,
   SiSqlite,
   SiGit,
+  FaNetworkWired,
+  FaEthernet,
+  FaRoute,
+  FaSitemap,
 }

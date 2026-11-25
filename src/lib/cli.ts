@@ -1,37 +1,95 @@
-import { certificates, journey, profile, projects, skills } from "../data/content"
-import { devices, findDevice } from "../data/network"
+import { certificates, journey, profile, projects, skillName, skills } from "../data/content"
+import { devices, type Device } from "../data/network"
 import type { Lang } from "../i18n/context"
+import {
+  cdpNeighbors,
+  ipInterfaceBrief,
+  ipRoute,
+  ipconfig,
+  isInfra,
+  isSwitch,
+  pingLines,
+  primaryIp,
+  resolveTarget,
+  tracerouteLines,
+  vlanBrief,
+} from "./netsim"
+import { configFor } from "./config"
 import { subnet } from "./subnet"
 
-export type CliResult = { out: string[]; clear?: boolean; goto?: string; open?: string }
+export type CliContext = { device: Device; privileged: boolean }
+export type CliResult = {
+  out: string[]
+  clear?: boolean
+  goto?: string
+  open?: string
+  close?: boolean
+  privileged?: boolean
+}
 
 const tx = (lang: Lang, pt: string, en: string) => (lang === "pt" ? pt : en)
 const is = (word: string | undefined, full: string) => !!word && full.startsWith(word.toLowerCase())
 
-export const commandNames = ["help", "show", "ping", "connect", "open", "subnet", "clear", "exit"]
+export const commandNames = [
+  "help",
+  "show",
+  "ping",
+  "traceroute",
+  "tracert",
+  "ipconfig",
+  "enable",
+  "disable",
+  "connect",
+  "open",
+  "subnet",
+  "about",
+  "projects",
+  "skills",
+  "journey",
+  "certs",
+  "contact",
+  "clear",
+  "exit",
+]
 
-const projectHosts = ["srv-radar", "srv-mia", "srv-arcano"]
+export const promptFor = (device: Device, privileged: boolean) =>
+  isInfra(device) ? `${device.host.toUpperCase()}${privileged ? "#" : ">"}` : "C:\\>"
 
-function help(lang: Lang): string[] {
-  const rows: [string, string, string][] = [
-    ["help", "lista os comandos", "list the commands"],
-    ["show version", "quem sou eu", "who I am"],
-    ["show ip interface brief", "projetos e status", "projects and status"],
-    ["show running-config", "skills e ferramentas", "skills and tools"],
-    ["show journey", "formação e experiência", "education and experience"],
-    ["show certificates", "cursos e certificados", "courses and certificates"],
-    ["show contact", "como falar comigo", "how to reach me"],
-    ["ping <host>", "testa um dispositivo (ex: srv-mia)", "test a device (e.g. srv-mia)"],
-    ["connect <host>", "abre um dispositivo", "open a device"],
-    ["open <host>", "abre o projeto ou link", "open the project or link"],
-    ["subnet <ip>/<prefixo>", "calculadora de sub-redes", "subnet calculator"],
-    ["clear", "limpa a tela", "clear the screen"],
-    ["exit", "volta ao início", "back to start"],
+const row = (cmd: string, text: string) => `${cmd.padEnd(26)}${text}`
+
+function help(lang: Lang, infra: boolean): string[] {
+  const network = infra
+    ? [
+        row("show ip interface brief", tx(lang, "interfaces e endereços IP", "interfaces and IP addresses")),
+        row("show ip route", tx(lang, "tabela de rotas", "routing table")),
+        row("show vlan brief", tx(lang, "VLANs e portas (switches)", "VLANs and ports (switches)")),
+        row("show cdp neighbors", tx(lang, "equipamentos vizinhos", "neighbor devices")),
+        row("enable / disable", tx(lang, "modo privilegiado", "privileged mode")),
+        row("show running-config", tx(lang, "configuração (após enable)", "configuration (after enable)")),
+        row("ping <host|ip>", tx(lang, "testa conectividade", "test connectivity")),
+        row("traceroute <host|ip>", tx(lang, "mostra o caminho", "show the path")),
+      ]
+    : [
+        row("ipconfig", tx(lang, "configuração de IP", "IP configuration")),
+        row("ping <host|ip>", tx(lang, "testa conectividade", "test connectivity")),
+        row("tracert <host|ip>", tx(lang, "mostra o caminho", "show the path")),
+      ]
+  const portfolio = [
+    row("about", tx(lang, "quem sou eu", "who I am")),
+    row("projects", tx(lang, "meus projetos", "my projects")),
+    row("skills", tx(lang, "ferramentas e áreas", "tools and areas")),
+    row("journey", tx(lang, "formação e experiência", "education and experience")),
+    row("certs", tx(lang, "cursos e certificados", "courses and certificates")),
+    row("contact", tx(lang, "como falar comigo", "how to reach me")),
+    row("connect <host>", tx(lang, "abre outro dispositivo", "open another device")),
+    row("open <host>", tx(lang, "abre o projeto ou link", "open the project or link")),
+    row("subnet <ip>/<prefixo>", tx(lang, "calculadora de sub-redes", "subnet calculator")),
+    row("clear / exit", tx(lang, "limpa a tela / fecha", "clear the screen / close")),
   ]
-  return rows.map(([cmd, pt, en]) => `${cmd.padEnd(26)}${tx(lang, pt, en)}`)
+  return [tx(lang, "Rede:", "Network:"), ...network, "", tx(lang, "Portfólio:", "Portfolio:"), ...portfolio]
 }
 
-function version(lang: Lang): string[] {
+function about(lang: Lang): string[] {
   return [
     `${profile.name}, ${tx(lang, "desenvolvedor fullstack", "fullstack developer")}`,
     tx(lang, "Uberlândia, MG, Brasil", "Uberlândia, MG, Brazil"),
@@ -40,31 +98,133 @@ function version(lang: Lang): string[] {
       "Engenharia de Computação (UNIUBE) e Gestão da Informação (UFU)",
       "Computer Engineering (UNIUBE) and Information Management (UFU)",
     ),
-    tx(lang, "Foco: backend, automação e análise de dados", "Focus: backend, automation and data analysis"),
+    tx(
+      lang,
+      "Foco: backend, automação, dados e redes de computadores",
+      "Focus: backend, automation, data and computer networking",
+    ),
     tx(lang, "Aberto a oportunidades", "Open to opportunities"),
   ]
 }
 
-function interfaces(lang: Lang): string[] {
-  const live = ["srv-mia"]
-  const rows = projects.map((p, i) => {
-    const host = projectHosts[i]
-    const status = live.includes(host) ? tx(lang, "no ar", "live") : "github"
-    return `${host.padEnd(14)}${p.name.padEnd(26)}${status}`
-  })
-  return [`${"Interface".padEnd(14)}${"Project".padEnd(26)}Status`, ...rows]
+function projectsTable(lang: Lang): string[] {
+  const rows = devices
+    .filter((d) => d.view === "project")
+    .map((d) => {
+      const project = projects[d.project ?? 0]
+      const status = d.id === "srv-mia" ? tx(lang, "no ar", "live") : "github"
+      return `${d.host.padEnd(12)}${primaryIp(d).padEnd(15)}${project.name.padEnd(24)}${status}`
+    })
+  return [`${"Host".padEnd(12)}${"IP".padEnd(15)}${"Project".padEnd(24)}Status`, ...rows]
 }
 
-function runningConfig(): string[] {
-  return ["!", `hostname ${profile.name.toLowerCase().replace(/\s+/g, "-")}`, "!", ...skills.map((s) => `tool ${s.name.toLowerCase().padEnd(14)}! ${s.kind.en.toLowerCase()}`), "!", "end"]
-}
-
-function ping(host: string): string[] {
+function skillsList(): string[] {
   return [
-    `Pinging ${host} with 32 bytes of data:`,
-    ...Array.from({ length: 4 }, () => `Reply from ${host}: bytes=32 time<1ms TTL=64`),
-    `Packets: Sent = 4, Received = 4, Lost = 0 (0% loss)`,
+    "!",
+    ...skills.map((s) => `tool ${skillName(s, "en").toLowerCase().padEnd(24)}! ${s.kind.en.toLowerCase()}`),
+    "!",
   ]
+}
+
+const journeyList = (lang: Lang) =>
+  journey.map((j) => `${j.period[lang].padEnd(22)}${j.title[lang]}, ${j.place}`)
+
+const certList = (lang: Lang) =>
+  certificates.map((c, i) => `${String(i + 1).padStart(2, "0")}. ${c.title[lang]} (${c.issuer[lang]})`)
+
+const contactList = () => [
+  `email     ${profile.email}`,
+  `github    ${profile.github}`,
+  `linkedin  ${profile.linkedin}`,
+]
+
+function show(parts: string[], lang: Lang, ctx: CliContext): CliResult {
+  const [, a, b, c] = parts
+  const { device, privileged } = ctx
+  const infra = isInfra(device)
+  const onlyNetwork = tx(
+    lang,
+    "% Comando disponível apenas em equipamentos de rede (ex: R1, CSW1).",
+    "% Command available only on network equipment (e.g. R1, CSW1).",
+  )
+
+  if (is(a, "version")) return { out: about(lang) }
+  if (is(a, "projects")) return { out: projectsTable(lang) }
+  if (is(a, "skills")) return { out: skillsList() }
+  if (is(a, "journey")) return { out: journeyList(lang) }
+  if (is(a, "certificates")) return { out: certList(lang) }
+  if (is(a, "contact")) return { out: contactList() }
+
+  if (is(a, "ip") && is(b, "interface")) return { out: infra ? ipInterfaceBrief(device) : [onlyNetwork] }
+  if (is(a, "ip") && is(b, "route")) return { out: infra ? ipRoute(device, lang) : [onlyNetwork] }
+  if (is(a, "vlan")) {
+    return { out: isSwitch(device) ? vlanBrief(device) : [onlyNetwork] }
+  }
+  if (is(a, "cdp") && (!b || is(b, "neighbors"))) return { out: infra ? cdpNeighbors(device) : [onlyNetwork] }
+  if (is(a, "running-config") || (is(a, "run") && !c)) {
+    if (!infra) return { out: [onlyNetwork] }
+    if (!privileged) {
+      return {
+        out: [tx(lang, "% Comando privilegiado. Digite enable primeiro.", "% Privileged command. Type enable first.")],
+      }
+    }
+    return { out: configFor(device, lang) }
+  }
+  return { out: [tx(lang, "% Comando incompleto. Digite help.", "% Incomplete command. Type help.")] }
+}
+
+export function runCommand(input: string, lang: Lang, ctx: CliContext): CliResult {
+  const parts = input.trim().split(/\s+/).filter(Boolean)
+  const [rawCmd, arg] = parts
+  if (!rawCmd) return { out: [] }
+  const cmd = rawCmd.toLowerCase()
+  const { device } = ctx
+  const infra = isInfra(device)
+
+  if (is(cmd, "help") || cmd === "?") return { out: help(lang, infra) }
+  if (cmd.length >= 2 && is(cmd, "show")) return show(parts, lang, ctx)
+  if (cmd === "clear" || cmd === "cls") return { out: [], clear: true }
+  if (cmd === "exit") return { out: [], close: true }
+  if (cmd === "about") return { out: about(lang) }
+  if (cmd === "projects") return { out: projectsTable(lang) }
+  if (cmd === "skills") return { out: skillsList() }
+  if (cmd === "journey") return { out: journeyList(lang) }
+  if (cmd === "certs" || cmd === "certificates") return { out: certList(lang) }
+  if (cmd === "contact") return { out: contactList() }
+  if (cmd === "subnet") return { out: subnetOut(arg, lang) }
+
+  if (cmd === "ipconfig") {
+    return { out: infra ? [tx(lang, "% Use show ip interface brief.", "% Use show ip interface brief.")] : ipconfig(device) }
+  }
+  if (cmd === "enable" && infra) return { out: [], privileged: true }
+  if (cmd === "disable" && infra) return { out: [], privileged: false }
+
+  const needsHost = ["ping", "traceroute", "tracert", "connect", "open"].find((c) => c === cmd || (cmd.length >= 3 && c.startsWith(cmd)))
+  if (needsHost) {
+    if (!arg) return { out: [tx(lang, `Uso: ${needsHost} <host>`, `Usage: ${needsHost} <host>`)] }
+    const target = resolveTarget(arg)
+    if (!target) {
+      return {
+        out: [
+          tx(lang, "% Host desconhecido. Hosts disponíveis:", "% Unknown host. Available hosts:"),
+          devices.map((d) => d.host).join("  "),
+        ],
+      }
+    }
+    if (needsHost === "ping") return { out: pingLines(device, target, lang) }
+    if (needsHost === "traceroute" || needsHost === "tracert") return { out: tracerouteLines(device, target, lang) }
+    if (needsHost === "connect") return { out: [`Connected to ${target.host.toUpperCase()}`], goto: target.id }
+    if (target.view === "project") {
+      const project = projects[target.project ?? 0]
+      return { out: [`Opening ${project.name}...`], open: project.href }
+    }
+    if (target.view === "internet") return { out: ["Opening github..."], open: profile.github }
+    return {
+      out: [tx(lang, "% Nada para abrir neste dispositivo. Use connect.", "% Nothing to open on this device. Use connect.")],
+    }
+  }
+
+  return { out: [tx(lang, "% Comando não reconhecido. Digite help.", "% Unrecognized command. Type help.")] }
 }
 
 function subnetOut(arg: string | undefined, lang: Lang): string[] {
@@ -78,49 +238,6 @@ function subnetOut(arg: string | undefined, lang: Lang): string[] {
     `${"Broadcast".padEnd(14)}${r.broadcast}`,
     `${tx(lang, "Primeiro host", "First host").padEnd(14)}${r.first}`,
     `${tx(lang, "Último host", "Last host").padEnd(14)}${r.last}`,
-    `${tx(lang, "Hosts", "Hosts").padEnd(14)}${r.hosts}`,
+    `${"Hosts".padEnd(14)}${r.hosts}`,
   ]
-}
-
-function show(parts: string[], lang: Lang): string[] {
-  const [, a, b, c] = parts
-  if (is(a, "version")) return version(lang)
-  if (is(a, "ip") && is(b, "interface") && (!c || is(c, "brief"))) return interfaces(lang)
-  if (is(a, "running-config") || is(a, "skills")) return runningConfig()
-  if (is(a, "journey")) return journey.map((j) => `${j.period[lang].padEnd(22)}${j.title[lang]}, ${j.place}`)
-  if (is(a, "certificates")) return certificates.map((cert, i) => `${String(i + 1).padStart(2, "0")}. ${cert.title[lang]} (${cert.issuer[lang]})`)
-  if (is(a, "contact")) return [`email     ${profile.email}`, `github    ${profile.github}`, `linkedin  ${profile.linkedin}`]
-  return [tx(lang, "% Comando incompleto. Digite help.", "% Incomplete command. Type help.")]
-}
-
-export function runCommand(input: string, lang: Lang): CliResult {
-  const parts = input.trim().split(/\s+/).filter(Boolean)
-  const [cmd, arg] = parts
-  if (!cmd) return { out: [] }
-
-  if (is(cmd, "help") || cmd === "?") return { out: help(lang) }
-  if (cmd.length >= 2 && is(cmd, "show")) return { out: show(parts, lang) }
-  if (is(cmd, "clear") || cmd === "cls") return { out: [], clear: true }
-  if (is(cmd, "exit")) return { out: [], goto: "home" }
-  if (is(cmd, "subnet")) return { out: subnetOut(arg, lang) }
-
-  if (is(cmd, "ping") || is(cmd, "connect") || is(cmd, "open")) {
-    const device = arg ? findDevice(arg) : undefined
-    if (!arg) return { out: [tx(lang, `Uso: ${cmd} <host>`, `Usage: ${cmd} <host>`)] }
-    if (!device) {
-      return {
-        out: [
-          tx(lang, "% Host desconhecido. Hosts disponíveis:", "% Unknown host. Available hosts:"),
-          devices.map((d) => d.host).join("  "),
-        ],
-      }
-    }
-    if (is(cmd, "ping")) return { out: ping(device.host), goto: device.id }
-    if (is(cmd, "connect")) return { out: [`Connected to ${device.host.toUpperCase()}`], goto: device.id }
-    if (device.view === "project") return { out: [`Opening ${projects[device.project ?? 0].name}...`], open: projects[device.project ?? 0].href }
-    if (device.view === "internet") return { out: ["Opening github..."], open: profile.github }
-    return { out: [tx(lang, "% Nada para abrir neste dispositivo. Use connect.", "% Nothing to open on this device. Use connect.")] }
-  }
-
-  return { out: [tx(lang, "% Comando não reconhecido. Digite help.", "% Unrecognized command. Type help.")] }
 }

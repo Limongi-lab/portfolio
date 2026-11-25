@@ -1,32 +1,49 @@
 import { useCallback, useRef, useState } from "react"
-import { runCommand } from "../../lib/cli"
+import type { Device } from "../../data/network"
 import type { Lang } from "../../i18n/context"
+import { promptFor, runCommand } from "../../lib/cli"
 
 export type TerminalLine = { id: number; kind: "in" | "out"; text: string }
+type Session = { lines: TerminalLine[]; privileged: boolean }
 
-export function useTerminal(lang: Lang, onGoto: (id: string) => void) {
-  const welcome = lang === "pt" ? 'Digite "help" para ver os comandos.' : 'Type "help" to see the commands.'
-  const [lines, setLines] = useState<TerminalLine[]>([{ id: 0, kind: "out", text: welcome }])
+const welcome = (lang: Lang): TerminalLine => ({
+  id: 0,
+  kind: "out",
+  text: lang === "pt" ? 'Digite "help" para ver os comandos.' : 'Type "help" to see the commands.',
+})
+
+export function useTerminal(lang: Lang, onGoto: (id: string) => void, onClose: () => void) {
+  const [sessions, setSessions] = useState<Record<string, Session>>({})
   const nextId = useRef(1)
 
+  const session = (id: string): Session => sessions[id] ?? { lines: [welcome(lang)], privileged: false }
+
   const exec = useCallback(
-    (input: string, prompt: string) => {
+    (device: Device, input: string) => {
       if (!input.trim()) return
-      const result = runCommand(input, lang)
+      const current = sessions[device.id] ?? { lines: [welcome(lang)], privileged: false }
+      const result = runCommand(input, lang, { device, privileged: current.privileged })
+      const privileged = result.privileged ?? current.privileged
+      const prompt = promptFor(device, current.privileged)
+
+      let lines = current.lines
       if (result.clear) {
-        setLines([])
+        lines = []
       } else {
-        const entries: TerminalLine[] = [
+        lines = [
+          ...current.lines,
           { id: nextId.current++, kind: "in", text: `${prompt} ${input}` },
           ...result.out.map((text) => ({ id: nextId.current++, kind: "out" as const, text })),
         ]
-        setLines((prev) => [...prev, ...entries])
       }
+      setSessions((prev) => ({ ...prev, [device.id]: { lines, privileged } }))
+
       if (result.goto) onGoto(result.goto)
+      if (result.close) onClose()
       if (result.open) window.open(result.open, "_blank", "noopener,noreferrer")
     },
-    [lang, onGoto],
+    [lang, sessions, onGoto, onClose],
   )
 
-  return { lines, exec }
+  return { session, exec }
 }

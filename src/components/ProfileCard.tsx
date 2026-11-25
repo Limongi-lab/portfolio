@@ -13,7 +13,6 @@ export default function ProfileCard() {
   const { t } = useLang()
   return (
     <aside className="relative rounded-[28px] bg-card text-card-text p-5 shadow-2xl shadow-black/30">
-      {/* arco tracejado, assinatura da referência */}
       <svg
         className="absolute -top-1 -left-1 w-28 h-24 text-accent pointer-events-none"
         viewBox="0 0 112 96"

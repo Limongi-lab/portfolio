@@ -1,16 +1,17 @@
-import { skills } from "../data/content"
+import { skillName, skills } from "../data/content"
 import { useLang } from "../i18n/context"
 import { ui } from "../i18n/ui"
 import SectionHeading from "./SectionHeading"
 import { skillIcons } from "./skillIcons"
 
 export default function Skills() {
-  const { t } = useLang()
+  const { lang, t } = useLang()
   return (
     <section id="skills" className="py-20 border-t border-border">
       <SectionHeading first={t(ui.skillsFirst)} ghost={t(ui.skillsGhost)} />
       <ul className="grid sm:grid-cols-2 gap-3">
-        {skills.map(({ name, icon, color, kind }) => {
+        {skills.map((skill) => {
+          const { name, icon, color, kind } = skill
           const Icon = skillIcons[icon]
           return (
             <li
@@ -22,7 +23,7 @@ export default function Skills() {
                 <Icon size={24} style={{ color }} />
               </span>
               <span>
-                <span className="block font-display font-semibold leading-tight">{name}</span>
+                <span className="block font-display font-semibold leading-tight">{skillName(skill, lang)}</span>
                 <span className="block text-xs text-text-dim mt-0.5">{t(kind)}</span>
               </span>
             </li>

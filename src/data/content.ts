@@ -14,7 +14,9 @@ export function gmailCompose(subject = "", body = "") {
   return `https://mail.google.com/mail/?${q.toString()}`
 }
 
-export type Skill = { name: string; icon: string; color: string; kind: L }
+export type Skill = { name: string; icon: string; color: string; kind: L; label?: L }
+
+export const skillName = (skill: Skill, lang: Lang) => (skill.label ? skill.label[lang] : skill.name)
 
 const language: L = { pt: "Linguagem", en: "Language" }
 const database: L = { pt: "Banco de dados", en: "Database" }
@@ -32,6 +34,33 @@ export const skills: Skill[] = [
   { name: "MongoDB", icon: "SiMongodb", color: "#47A248", kind: { pt: "Banco NoSQL", en: "NoSQL database" } },
   { name: "SQLite", icon: "SiSqlite", color: "#3FA6E8", kind: database },
   { name: "Git", icon: "SiGit", color: "#F05033", kind: { pt: "Versionamento", en: "Version control" } },
+  {
+    name: "Redes de computadores",
+    label: { pt: "Redes de computadores", en: "Computer networking" },
+    icon: "FaNetworkWired",
+    color: "#EE6A3C",
+    kind: { pt: "Área de estudo", en: "Area of study" },
+  },
+  {
+    name: "IPv4 e sub-redes",
+    label: { pt: "IPv4 e sub-redes", en: "IPv4 and subnetting" },
+    icon: "FaEthernet",
+    color: "#3FA6E8",
+    kind: { pt: "Endereçamento", en: "Addressing" },
+  },
+  {
+    name: "VLANs e roteamento",
+    label: { pt: "VLANs e roteamento", en: "VLANs and routing" },
+    icon: "FaRoute",
+    color: "#44B78B",
+    kind: { pt: "Switching e roteamento", en: "Switching and routing" },
+  },
+  {
+    name: "Cisco Packet Tracer",
+    icon: "FaSitemap",
+    color: "#049FD9",
+    kind: { pt: "Simulação de redes", en: "Network simulation" },
+  },
 ]
 
 export type Project = {
@@ -188,6 +217,6 @@ export const journey: JourneyItem[] = [
 ]
 
 export const typedWords: Record<Lang, string[]> = {
-  pt: ["Fullstack", "Django+React", "Automação", "Dados"],
-  en: ["Fullstack", "Django+React", "Automation", "Data"],
+  pt: ["Fullstack", "Backend", "Redes", "Django+React", "Automação", "Dados"],
+  en: ["Fullstack", "Backend", "Networking", "Django+React", "Automation", "Data"],
 }

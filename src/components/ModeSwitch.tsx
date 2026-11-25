@@ -15,10 +15,12 @@ export default function ModeSwitch({ mode, onChange }: { mode: Mode; onChange: (
       onClick={() => onChange(next)}
       aria-label={label}
       title={label}
-      className="h-10 rounded-full border border-border bg-surface/80 backdrop-blur-md px-3 md:px-4 flex items-center gap-2 text-sm font-medium text-text-dim hover:text-accent hover:border-accent transition-colors"
+      className={`h-10 rounded-full px-3 sm:px-4 flex items-center gap-2 text-sm font-semibold text-[#111] hover:brightness-110 transition ${
+        next === "network" ? "bg-accent" : "bg-lime"
+      }`}
     >
       {next === "network" ? <FaNetworkWired size={14} /> : <FaList size={14} />}
-      <span className="hidden md:inline">{label}</span>
+      <span className="hidden sm:inline whitespace-nowrap">{label}</span>
     </button>
   )
 }

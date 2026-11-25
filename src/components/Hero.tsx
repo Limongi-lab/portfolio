@@ -1,47 +1,11 @@
-import { useEffect, useState } from "react"
-import { FaArrowRight, FaDatabase, FaLayerGroup } from "react-icons/fa6"
-import { profile, typedWords } from "../data/content"
+import { FaArrowRight, FaDatabase, FaLayerGroup, FaNetworkWired } from "react-icons/fa6"
+import { profile } from "../data/content"
 import { useLang } from "../i18n/context"
 import { ui } from "../i18n/ui"
+import Typed from "./Typed"
 
-function useTyped(words: string[]) {
-  const reduced =
-    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-  const [text, setText] = useState(reduced ? words[0] : "")
-
-  useEffect(() => {
-    if (reduced) return
-    let word = 0
-    let chars = 0
-    let deleting = false
-    let timer: ReturnType<typeof setTimeout>
-
-    const tick = () => {
-      const current = words[word]
-      chars += deleting ? -1 : 1
-      setText(current.slice(0, chars))
-
-      let delay = deleting ? 45 : 95
-      if (!deleting && chars === current.length) {
-        deleting = true
-        delay = 1700
-      } else if (deleting && chars === 0) {
-        deleting = false
-        word = (word + 1) % words.length
-        delay = 350
-      }
-      timer = setTimeout(tick, delay)
-    }
-    timer = setTimeout(tick, 600)
-    return () => clearTimeout(timer)
-  }, [words, reduced])
-
-  return reduced ? words[0] : text
-}
-
-export default function Hero() {
-  const { lang, t } = useLang()
-  const typed = useTyped(typedWords[lang])
+export default function Hero({ onNetwork }: { onNetwork: () => void }) {
+  const { t } = useLang()
 
   return (
     <section id="topo" className="pt-28 lg:pt-32 pb-20">
@@ -51,8 +15,7 @@ export default function Hero() {
           {t(ui.heroLine)}
         </span>
         <span aria-hidden="true" className="ghost min-h-[1em]">
-          {typed}
-          <span className="inline-block w-[0.07em] h-[0.85em] -mb-[0.05em] ml-1 bg-accent animate-caret" />
+          <Typed />
         </span>
       </h1>
 
@@ -108,6 +71,24 @@ export default function Hero() {
           </span>
           <span className="sr-only">{t(ui.seeTools)}</span>
         </a>
+
+        <button
+          type="button"
+          onClick={onNetwork}
+          className="group relative sm:col-span-2 rounded-2xl border-2 border-accent bg-surface/80 p-5 text-left flex items-center gap-5 transition-transform hover:-translate-y-1"
+        >
+          <span className="w-14 h-14 rounded-2xl bg-accent text-[#111] flex items-center justify-center shrink-0">
+            <FaNetworkWired size={24} aria-hidden="true" />
+          </span>
+          <span className="min-w-0">
+            <span className="block font-display font-semibold text-lg leading-snug">{t(ui.heroNetTitle)}</span>
+            <span className="block text-sm text-text-dim leading-snug mt-1">{t(ui.heroNetText)}</span>
+          </span>
+          <span className="ml-auto hidden sm:inline-flex items-center gap-2 rounded-full bg-accent text-[#111] font-semibold text-sm px-4 py-2 shrink-0 transition-transform group-hover:translate-x-1">
+            {t(ui.heroNetCta)}
+            <FaArrowRight size={12} aria-hidden="true" />
+          </span>
+        </button>
       </div>
     </section>
   )

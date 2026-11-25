@@ -11,6 +11,7 @@ export default function About() {
         <p>{t(ui.about1)}</p>
         <p className="text-text-dim">{t(ui.about2)}</p>
         <p className="text-text-dim">{t(ui.about3)}</p>
+        <p className="text-text-dim">{t(ui.about4)}</p>
       </div>
     </section>
   )
