@@ -28,8 +28,29 @@ const along = (from: { x: number; y: number }, to: { x: number; y: number }, dis
   const dx = to.x - from.x
   const dy = to.y - from.y
   const len = Math.hypot(dx, dy)
-  return { x: from.x + (dx / len) * distance, y: from.y + (dy / len) * distance, angle: (Math.atan2(dy, dx) * 180) / Math.PI, nx: -dy / len, ny: dx / len }
+  let nx = -dy / len
+  let ny = dx / len
+  if (ny > 0.001 || (Math.abs(ny) <= 0.001 && nx < 0)) {
+    nx = -nx
+    ny = -ny
+  }
+  return {
+    x: from.x + (dx / len) * distance,
+    y: from.y + (dy / len) * distance,
+    angle: (Math.atan2(dy, dx) * 180) / Math.PI,
+    nx,
+    ny,
+  }
 }
+
+const labelDistance = (id: string) => (byId(id)!.kind === "switch" ? 108 : 74)
+
+const labelClass = (side: "bottom" | "left" | "right") =>
+  side === "left"
+    ? "absolute right-full mr-3 top-0 w-36 flex flex-col items-end text-right"
+    : side === "right"
+      ? "absolute left-full ml-3 top-0 w-36 flex flex-col items-start text-left"
+      : "absolute left-1/2 top-full mt-1.5 -translate-x-1/2 w-36 flex flex-col items-center text-center"
 
 export default function Workspace({ selectedId, tool, pduSource, zoom, dimExcept, anim, result, stepMs, onDevice }: Props) {
   const { t } = useLang()
@@ -71,9 +92,9 @@ export default function Workspace({ selectedId, tool, pduSource, zoom, dimExcept
               const traveled = pathLinks.has([link.a[0], link.b[0]].sort().join("|"))
               const e1 = along(p1, p2, 54)
               const e2 = along(p2, p1, 54)
-              const l1 = along(p1, p2, 86)
-              const l2 = along(p2, p1, 86)
-              const mid = { x: (p1.x + p2.x) / 2, y: (p1.y + p2.y) / 2 }
+              const l1 = along(p1, p2, labelDistance(link.a[0]))
+              const l2 = along(p2, p1, labelDistance(link.b[0]))
+              const mid = along(p1, p2, Math.hypot(p2.x - p1.x, p2.y - p1.y) / 2)
               const dim = dimExcept && !(dimExcept.includes(link.a[0]) && dimExcept.includes(link.b[0]))
               return (
                 <g key={`${link.a[0]}-${link.b[0]}`} opacity={dim ? 0.25 : 1}>
@@ -102,23 +123,25 @@ export default function Workspace({ selectedId, tool, pduSource, zoom, dimExcept
                   ].map(({ p, name }) => (
                     <text
                       key={name + p.x}
-                      x={p.x + p.nx * 11}
-                      y={p.y + p.ny * 11 + 3}
+                      x={p.x + p.nx * 13}
+                      y={p.y + p.ny * 13 + 4}
                       textAnchor="middle"
                       className="fill-text-dim font-mono"
-                      fontSize="10"
+                      fontSize="12"
                     >
                       {name}
                     </text>
                   ))}
                   {link.subnet && (
                     <text
-                      x={mid.x + 8}
-                      y={mid.y + 4}
+                      x={mid.x - mid.nx * 18}
+                      y={mid.y - mid.ny * 18 + 4}
+                      textAnchor="middle"
                       className="fill-text font-mono"
-                      fontSize="11"
+                      fontSize="13"
+                      fontWeight="600"
                       stroke="var(--color-bg)"
-                      strokeWidth="4"
+                      strokeWidth="5"
                       paintOrder="stroke"
                     >
                       {link.subnet}
@@ -130,8 +153,8 @@ export default function Workspace({ selectedId, tool, pduSource, zoom, dimExcept
           </svg>
 
           <div
-            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-lg border border-dashed border-border bg-surface/80 px-3 py-2 font-mono text-[11px] leading-relaxed text-text-dim"
-            style={{ left: 600, top: 478 }}
+            className="absolute -translate-x-1/2 -translate-y-1/2 rounded-lg border border-dashed border-border bg-surface/80 px-3 py-2 font-mono text-[12px] leading-relaxed text-text-dim"
+            style={{ left: 692, top: 412 }}
           >
             <div className="text-accent mb-0.5">VLANs</div>
             <div>VLAN 10 {vlanNames[10]} 192.168.10.0/24</div>
@@ -151,12 +174,12 @@ export default function Workspace({ selectedId, tool, pduSource, zoom, dimExcept
                 aria-pressed={isSelected}
                 aria-label={`${device.host}, ${t(device.label)}`}
                 style={{ left: device.x, top: device.y }}
-                className={`group absolute -translate-x-1/2 -translate-y-1/2 w-32 flex flex-col items-center gap-1 text-center transition-opacity ${
+                className={`group absolute -translate-x-1/2 -translate-y-1/2 w-16 h-16 transition-opacity ${
                   dim ? "opacity-30" : ""
                 }`}
               >
                 <span
-                  className={`relative w-16 h-16 rounded-2xl border-2 flex items-center justify-center transition-all duration-200 group-hover:-translate-y-0.5 ${
+                  className={`absolute inset-0 rounded-2xl border-2 flex items-center justify-center transition-all duration-200 group-hover:-translate-y-0.5 ${
                     isSelected
                       ? "bg-accent border-accent text-[#111] shadow-[0_0_28px_var(--color-accent)]"
                       : isSource
@@ -167,9 +190,11 @@ export default function Workspace({ selectedId, tool, pduSource, zoom, dimExcept
                   <DeviceIcon kind={device.kind} size={30} />
                   <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 rounded-full bg-lime ring-2 ring-bg" />
                 </span>
-                <span className="font-mono text-xs font-semibold uppercase tracking-wide">{device.host}</span>
-                <span className="font-mono text-[10px] text-text-dim">{primaryIp(device)}</span>
-                <span className="text-[11px] leading-tight text-text-dim">{t(device.label)}</span>
+                <span className={labelClass(device.labelSide ?? "bottom")}>
+                  <span className="font-mono text-[13px] font-semibold uppercase tracking-wide">{device.host}</span>
+                  <span className="font-mono text-[11px] text-text-dim">{primaryIp(device)}</span>
+                  <span className="text-xs leading-tight text-text-dim">{t(device.label)}</span>
+                </span>
               </button>
             )
           })}
@@ -186,7 +211,7 @@ export default function Workspace({ selectedId, tool, pduSource, zoom, dimExcept
           {result && (
             <span
               className="absolute z-20 -translate-x-1/2 flex items-center gap-1.5 rounded-full bg-accent2 text-[#111] text-xs font-semibold px-3 py-1 pointer-events-none"
-              style={{ left: byId(result.id)!.x, top: byId(result.id)!.y - 78 }}
+              style={{ left: byId(result.id)!.x, top: byId(result.id)!.y - 62 }}
             >
               <FaCheck size={11} /> {t(ui.statusOk)}
             </span>

@@ -208,4 +208,17 @@ export const ui = {
   },
   heroNetCta: { pt: "Abrir Modo rede", en: "Open Network mode" },
   modeSimpleHint: { pt: "Prefere o portfólio tradicional?", en: "Prefer the traditional portfolio?" },
+  miniFirst: { pt: "Minha", en: "My" },
+  miniGhost: { pt: "rede", en: "network" },
+  miniText: {
+    pt: "Uma redezinha que resume o portfólio. Clique nos dispositivos ou envie um pacote do PC0 até o servidor do UFU Mia.",
+    en: "A tiny network that sums up the portfolio. Click the devices or send a packet from PC0 to the UFU Mia server.",
+  },
+  miniSend: { pt: "Enviar pacote", en: "Send packet" },
+  miniSending: { pt: "Enviando...", en: "Sending..." },
+  miniDelivered: {
+    pt: "Entregue: PC0 para SRV-MIA em {n} saltos.",
+    en: "Delivered: PC0 to SRV-MIA in {n} hops.",
+  },
+  miniPick: { pt: "Toque em um dispositivo para ver o que ele guarda.", en: "Tap a device to see what it holds." },
 } satisfies Record<string, L>

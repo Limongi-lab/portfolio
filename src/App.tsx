@@ -6,6 +6,7 @@ import Contact from "./components/Contact"
 import Footer from "./components/Footer"
 import Hero from "./components/Hero"
 import Journey from "./components/Journey"
+import MiniNetwork from "./components/MiniNetwork"
 import type { Mode } from "./components/ModeSwitch"
 import Nav from "./components/Nav"
 import NetworkMode from "./components/network/NetworkMode"
@@ -48,6 +49,7 @@ function App() {
                   <Projects />
                   <Journey />
                   <Certificates />
+                  <MiniNetwork onNetwork={() => setMode("network")} />
                   <Contact />
                 </main>
               </div>

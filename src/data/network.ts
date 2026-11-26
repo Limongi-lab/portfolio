@@ -48,6 +48,7 @@ export type Device = {
   role: L
   x: number
   y: number
+  labelSide?: "bottom" | "left" | "right"
   ifaces: Iface[]
   cli: boolean
   gateway?: string
@@ -62,7 +63,7 @@ export type Link = {
   wan?: boolean
 }
 
-export const canvas = { width: 1200, height: 700 }
+export const canvas = { width: 1400, height: 650 }
 
 export const vlanNames: Record<number, string> = { 10: "DATA", 20: "SERVERS", 99: "ADMIN" }
 
@@ -85,8 +86,8 @@ export const devices: Device[] = [
       pt: "Provedor de internet. É por aqui que GitHub e LinkedIn chegam até você.",
       en: "Internet provider. This is how GitHub and LinkedIn reach you.",
     },
-    x: 600,
-    y: 70,
+    x: 140,
+    y: 85,
     cli: false,
     ifaces: [{ name: "Gi0/0", ip: "203.0.113.1", prefix: 30, mode: "routed" }],
   },
@@ -101,8 +102,8 @@ export const devices: Device[] = [
       pt: "Roteador de borda. Liga a rede do portfólio à Internet e é o ponto de partida.",
       en: "Edge router. Connects the portfolio network to the Internet and is the starting point.",
     },
-    x: 600,
-    y: 195,
+    x: 440,
+    y: 85,
     cli: true,
     gateway: "203.0.113.1",
     routes: [
@@ -126,8 +127,8 @@ export const devices: Device[] = [
       pt: "Switch de núcleo (camada 3). Roteia entre as VLANs e conecta tudo. Aqui ficam as tecnologias que eu uso.",
       en: "Core layer 3 switch. Routes between VLANs and connects everything. This is where the technologies I use live.",
     },
-    x: 600,
-    y: 330,
+    x: 740,
+    y: 85,
     cli: true,
     gateway: "10.10.10.1",
     ifaces: [
@@ -150,8 +151,9 @@ export const devices: Device[] = [
       pt: "Switch de acesso. Conecta as estações da VLAN de dados (10) e da administração (99).",
       en: "Access switch. Connects the data VLAN (10) and admin VLAN (99) workstations.",
     },
-    x: 320,
-    y: 470,
+    x: 360,
+    y: 325,
+    labelSide: "left",
     cli: true,
     gateway: "192.168.99.1",
     ifaces: [
@@ -174,8 +176,9 @@ export const devices: Device[] = [
       pt: "Switch dos servidores (VLAN 20). Cada projeto roda em um servidor ligado aqui.",
       en: "Server switch (VLAN 20). Each project runs on a server connected here.",
     },
-    x: 920,
-    y: 470,
+    x: 1025,
+    y: 325,
+    labelSide: "right",
     cli: true,
     gateway: "192.168.99.1",
     ifaces: [
@@ -198,8 +201,8 @@ export const devices: Device[] = [
       pt: "Estação de trabalho do Rafael (VLAN 10). Quem eu sou.",
       en: "Rafael's workstation (VLAN 10). Who I am.",
     },
-    x: 130,
-    y: 610,
+    x: 150,
+    y: 520,
     cli: true,
     gateway: "192.168.10.1",
     ifaces: [{ name: "Fa0", ip: "192.168.10.50", prefix: 24, vlan: 10 }],
@@ -215,8 +218,8 @@ export const devices: Device[] = [
       pt: "Laptop de estudos (VLAN 10). Minha formação e experiência.",
       en: "Study laptop (VLAN 10). My education and experience.",
     },
-    x: 260,
-    y: 610,
+    x: 290,
+    y: 520,
     cli: true,
     gateway: "192.168.10.1",
     ifaces: [{ name: "Fa0", ip: "192.168.10.55", prefix: 24, vlan: 10 }],
@@ -229,8 +232,8 @@ export const devices: Device[] = [
     category: "end",
     label: ui.devContact,
     role: { pt: "Telefone IP (VLAN 10). Fale comigo.", en: "IP phone (VLAN 10). Talk to me." },
-    x: 390,
-    y: 610,
+    x: 430,
+    y: 520,
     cli: true,
     gateway: "192.168.10.1",
     ifaces: [{ name: "Fa0", ip: "192.168.10.60", prefix: 24, vlan: 10 }],
@@ -246,8 +249,8 @@ export const devices: Device[] = [
       pt: "Estação de administração (VLAN 99). Ferramentas de rede, como a calculadora de sub-redes.",
       en: "Admin workstation (VLAN 99). Network tools, like the subnet calculator.",
     },
-    x: 520,
-    y: 610,
+    x: 570,
+    y: 520,
     cli: true,
     gateway: "192.168.99.1",
     ifaces: [{ name: "Fa0", ip: "192.168.99.10", prefix: 24, vlan: 99 }],
@@ -260,8 +263,8 @@ export const devices: Device[] = [
     category: "servers",
     label: projectLabel(0),
     role: serverRole,
-    x: 725,
-    y: 610,
+    x: 815,
+    y: 520,
     cli: true,
     gateway: "172.16.20.1",
     project: 0,
@@ -275,8 +278,8 @@ export const devices: Device[] = [
     category: "servers",
     label: projectLabel(1),
     role: serverRole,
-    x: 855,
-    y: 610,
+    x: 955,
+    y: 520,
     cli: true,
     gateway: "172.16.20.1",
     project: 1,
@@ -290,8 +293,8 @@ export const devices: Device[] = [
     category: "servers",
     label: projectLabel(2),
     role: serverRole,
-    x: 985,
-    y: 610,
+    x: 1095,
+    y: 520,
     cli: true,
     gateway: "172.16.20.1",
     project: 2,
@@ -308,8 +311,8 @@ export const devices: Device[] = [
       pt: "Servidor de arquivos (VLAN 20). Guarda os certificados.",
       en: "File server (VLAN 20). Stores the certificates.",
     },
-    x: 1115,
-    y: 610,
+    x: 1235,
+    y: 520,
     cli: true,
     gateway: "172.16.20.1",
     ifaces: [{ name: "Eth0", ip: "172.16.20.20", prefix: 27, vlan: 20 }],
